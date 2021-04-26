@@ -1,38 +1,47 @@
 {
-  "scripts": {
-    "dev": "snowpack dev",
-    "build": "snowpack build",
-    "lint": "eslint --ext .tsx,.ts --ignore-path .gitignore .",
-    "prettier": "npx prettier --write ."
-  },
-  "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@snowpack/plugin-postcss": "^1.1.0",
-    "@snowpack/plugin-react-refresh": "^2.4.0",
-    "@snowpack/plugin-typescript": "^1.2.1",
-    "@types/react": "^17.0.1",
-    "@types/react-dom": "^17.0.0",
-    "@types/react-router-dom": "^5.1.7",
-    "@types/snowpack-env": "^2.3.3",
-    "@typescript-eslint/eslint-plugin": "^4.15.0",
-    "@typescript-eslint/parser": "^4.15.0",
-    "babel-loader": "^8.2.2",
-    "eslint": "^7.19.0",
-    "eslint-config-prettier": "^7.2.0",
-    "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "postcss": "^8.2.6",
-    "postcss-cli": "^8.3.1",
-    "postcss-preset-env": "^6.7.0",
-    "prettier": "^2.2.1",
-    "react-router-dom": "^5.2.0",
-    "snowpack": "^3.0.1",
-    "tailwindcss": "^2.0.3",
-    "typescript": "^4.1.4"
-  },
-  "dependencies": {
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
-  },
-  "license": "MIT"
+    "name": "vite-project",
+    "version": "0.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc && vite build",
+        "serve": "vite preview",
+        "lint": "eslint --ext .tsx,.ts --ignore-path .eslintignore .",
+        "prettier": "npx prettier --write .",
+        "test": "jest",
+        "tcm": "tcm -o types/styles src"
+    },
+    "dependencies": {
+        "react": "17.0.2",
+        "react-dom": "17.0.2",
+        "react-router-dom": "^5.2.0",
+        "recoil": "^0.2.0"
+    },
+    "devDependencies": {
+        "@types/jest": "26.0.22",
+        "@types/react": "17.0.3",
+        "@types/react-dom": "17.0.3",
+        "@types/react-router-dom": "^5.1.7",
+        "@typescript-eslint/eslint-plugin": "4.22.0",
+        "@typescript-eslint/parser": "4.22.0",
+        "@vitejs/plugin-react-refresh": "1.3.2",
+        "eslint": "7.24.0",
+        "eslint-config-prettier": "8.2.0",
+        "eslint-import-resolver-typescript": "2.4.0",
+        "eslint-plugin-import": "2.22.1",
+        "eslint-plugin-jsx-a11y": "6.4.1",
+        "eslint-plugin-prettier": "3.4.0",
+        "eslint-plugin-react": "7.23.2",
+        "eslint-plugin-react-hooks": "4.2.0",
+        "jest": "26.6.3",
+        "postcss": "8.2.10",
+        "postcss-preset-env": "6.7.0",
+        "prettier": "2.2.1",
+        "react-use": "17.2.3",
+        "tailwindcss": "2.1.1",
+        "ts-jest": "26.5.5",
+        "typed-css-modules": "^0.6.7",
+        "typescript": "4.2.4",
+        "vite": "2.2.1"
+    },
+    "license": "MIT"
 }

@@ -1,9 +1,9 @@
-const tailwindcss = require("tailwindcss");
-const postcssPresetEnv = require("postcss-preset-env");
-
 module.exports = {
-  plugins: [
-    tailwindcss(),
-    postcssPresetEnv({ browsers: "last 2 versions", stage: 1 }),
-  ],
-};
+    plugins: [
+        require('tailwindcss'),
+        require('postcss-preset-env')({
+            browsers: 'last 2 versions',
+            stage: 1,
+        }),
+    ],
+}

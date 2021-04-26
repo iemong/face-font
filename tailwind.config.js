@@ -1,18 +1,15 @@
 module.exports = {
-  purge: {
-    layers: ["components", "utilities"],
-    content: ["./src/**/*.tsx"],
-  },
-  darkMode: false, // or 'media' or 'class'
-  theme: {
-    fontFamily: {
-      sans: ["Nunito Sans", "Helvetica Neue", "Helvetica", "sans-serif"],
-      serif: ["Merriweather", "serif"],
+    mode: 'jit',
+    purge: {
+        enabled: process.env.NODE_ENV === 'production',
+        content: ['./index.html', './src/**/*.tsx', './src/**/*.ts'],
     },
-    extend: {},
-  },
-  variants: {
-    extend: {},
-  },
-  plugins: [],
+    darkMode: false, // or 'media' or 'class'
+    theme: {
+        extend: {},
+    },
+    variants: {
+        extend: {},
+    },
+    plugins: [],
 }
