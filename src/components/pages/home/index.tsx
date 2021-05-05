@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { createMosaic } from '~/assets/utils/filter'
 import { HEIGHT, WIDTH } from '~/assets/utils/const'
 import Peer, { MediaConnection } from 'skyway-js'
+import { config } from 'dotenv'
+
+config()
 
 const Home = (): JSX.Element => {
     const [currentStream, setStream] = useState<MediaStream | null>(null)
@@ -71,7 +74,7 @@ const Home = (): JSX.Element => {
 
     const initPeer = (stream: MediaStream) => {
         const peer = new Peer({
-            key: 'API_KEY',
+            key: process.env.API_KEY || '',
             debug: 3,
         })
         peer.on('open', () => {
