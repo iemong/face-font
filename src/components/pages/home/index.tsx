@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from 'react'
 import { createMosaic } from '~/assets/utils/filter'
 import { HEIGHT, WIDTH } from '~/assets/utils/const'
 import Peer, { MediaConnection } from 'skyway-js'
-import { config } from 'dotenv'
 
-config()
+interface CanvasElement extends HTMLCanvasElement {
+    captureStream(frameRate?: number): MediaStream
+}
 
 const Home = (): JSX.Element => {
     const [currentStream, setStream] = useState<MediaStream | null>(null)
@@ -64,9 +65,13 @@ const Home = (): JSX.Element => {
     }, [context, loop])
 
     const init = async () => {
-        const stream = await initVideo()
+        await initVideo()
         initCanvas()
-        if (stream) initPeer(stream)
+        if (!canvasRef.current) return
+        const canvasStream = (canvasRef.current as CanvasElement).captureStream(
+            30
+        )
+        initPeer(canvasStream)
     }
 
     const videoRef = useRef<HTMLVideoElement | null>(null)
