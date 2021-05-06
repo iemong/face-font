@@ -120,19 +120,13 @@ const Home = (): JSX.Element => {
 
     return (
         <>
-            <video
-                ref={videoRef}
-                className={'hidden'}
-                autoPlay
-                muted
-                playsInline
-            />
-            <canvas ref={canvasRef} />
+            <video ref={videoRef} autoPlay muted playsInline />
+            <canvas ref={canvasRef} className={'hidden'} />
             <button onClick={init}>初期化</button>
             <p>{currentPeer?.id}</p>
             <textarea onChange={handleChangeTextarea} />
             <button onClick={call}>発信</button>
-            <video ref={theirVideoRef} autoPlay muted playsInline />
+            <video ref={theirVideoRef} autoPlay muted playsInline width={400} />
         </>
     )
 }
