@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { createMosaic } from '~/assets/utils/filter'
 import { HEIGHT, WIDTH } from '~/assets/utils/const'
 import Peer, { MediaConnection } from 'skyway-js'
+import * as Tone from 'tone'
 
 interface CanvasElement extends HTMLCanvasElement {
     captureStream(frameRate?: number): MediaStream
@@ -64,13 +65,27 @@ const Home = (): JSX.Element => {
         loop()
     }, [context, loop])
 
+    const initVoice = async () => {
+        const micAudio = new Tone.UserMedia()
+        await micAudio.open()
+        const shifter = new Tone.PitchShift(5)
+        const reverb = new Tone.Freeverb()
+        const effectedDest = Tone.context.createMediaStreamDestination()
+        micAudio.connect(shifter)
+        shifter.connect(reverb)
+        reverb.connect(effectedDest)
+        return effectedDest.stream
+    }
+
     const init = async () => {
+        const audioStream = await initVoice()
         await initVideo()
         initCanvas()
         if (!canvasRef.current) return
         const canvasStream = (canvasRef.current as CanvasElement).captureStream(
             30
         )
+        canvasStream.addTrack(audioStream.getAudioTracks()[0])
         initPeer(canvasStream)
     }
 
