@@ -12,6 +12,9 @@ export default defineConfig({
     define: {
         'process.env': env,
     },
+    server: {
+        https: true,
+    },
     resolve: {
         alias: [{ find: '~', replacement: '/src' }],
     },
