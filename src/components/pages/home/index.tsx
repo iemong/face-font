@@ -20,7 +20,6 @@ const Home = (): JSX.Element => {
             },
         }
         const stream = await navigator.mediaDevices.getUserMedia(constraints)
-        setStream(stream)
         const $video = videoRef.current
         if (!$video) return
         $video.srcObject = stream
@@ -65,28 +64,34 @@ const Home = (): JSX.Element => {
         loop()
     }, [context, loop])
 
-    const initVoice = async () => {
+    const initToneUserMedia = async () => {
         const micAudio = new Tone.UserMedia()
         await micAudio.open()
+        return micAudio
+    }
+
+    const createAudioNode = (micAudio: Tone.UserMedia) => {
         const shifter = new Tone.PitchShift(5)
         const reverb = new Tone.Freeverb()
         const effectedDest = Tone.context.createMediaStreamDestination()
         micAudio.connect(shifter)
         shifter.connect(reverb)
         reverb.connect(effectedDest)
-        return effectedDest.stream
+        return effectedDest
     }
 
     const init = async () => {
-        const audioStream = await initVoice()
+        const micAudio = await initToneUserMedia()
         await initVideo()
         initCanvas()
         if (!canvasRef.current) return
+        const audioNode = await createAudioNode(micAudio)
         const canvasStream = (canvasRef.current as CanvasElement).captureStream(
             30
         )
-        canvasStream.addTrack(audioStream.getAudioTracks()[0])
+        canvasStream.addTrack(audioNode.stream.getAudioTracks()[0])
         initPeer(canvasStream)
+        setStream(canvasStream)
     }
 
     const videoRef = useRef<HTMLVideoElement | null>(null)
@@ -141,7 +146,9 @@ const Home = (): JSX.Element => {
             <p>{currentPeer?.id}</p>
             <textarea onChange={handleChangeTextarea} />
             <button onClick={call}>発信</button>
-            <video ref={theirVideoRef} autoPlay muted playsInline width={400} />
+            <video ref={theirVideoRef} autoPlay playsInline width={400}>
+                <track default kind="captions" />
+            </video>
         </>
     )
 }
