@@ -13,7 +13,7 @@ const Home = (): JSX.Element => {
     const [currentPeer, setPeer] = useState<Peer | null>(null)
     const initVideo = async () => {
         const constraints: MediaStreamConstraints = {
-            audio: false,
+            audio: true,
             video: {
                 width: WIDTH,
                 height: HEIGHT,
