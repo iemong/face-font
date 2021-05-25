@@ -1,14 +1,14 @@
 import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Home from '~/components/pages/home'
-import About from '~/components/pages/about'
+import Room from '~/components/pages/room'
 
 const Router = (): JSX.Element => {
     return (
         <BrowserRouter>
             <Switch>
                 <Route path="/about">
-                    <About />
+                    <Room />
                 </Route>
                 <Route path="/">
                     <Home />
