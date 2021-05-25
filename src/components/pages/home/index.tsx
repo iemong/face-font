@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react'
-import Peer, { MediaConnection } from 'skyway-js'
+import React, { useEffect, useState } from 'react'
 import { useVideo } from '~/assets/hooks/useVideo'
 import { useCanvas } from '~/assets/hooks/useCanvas'
 import { useTone } from '~/assets/hooks/useTone'
+import { useSkyWay } from '~/assets/hooks/useSkyWay'
 
 interface CanvasElement extends HTMLCanvasElement {
     captureStream(frameRate?: number): MediaStream
@@ -10,11 +10,12 @@ interface CanvasElement extends HTMLCanvasElement {
 
 const Home = (): JSX.Element => {
     const [currentStream, setStream] = useState<MediaStream | null>(null)
-    const [currentPeer, setPeer] = useState<Peer | null>(null)
-
     const [videoRef, initVideo] = useVideo()
     const [canvasRef, context, initCanvas, loopCanvas] = useCanvas(videoRef)
     const [initTone, createAudioNode] = useTone()
+    const [theirVideoRef, currentPeer, initPeer, call] = useSkyWay(
+        currentStream
+    )
 
     useEffect(() => {
         if (!context) return
@@ -35,39 +36,6 @@ const Home = (): JSX.Element => {
         setStream(canvasStream)
     }
 
-    const initPeer = (stream: MediaStream) => {
-        const peer = new Peer({
-            key: process.env.API_KEY || '',
-            debug: 3,
-        })
-        peer.on('open', () => {
-            setPeer(peer)
-        })
-        peer.on('call', (mediaConnection) => {
-            console.log(stream)
-            mediaConnection.answer(stream)
-            setEventListener(mediaConnection)
-        })
-    }
-
-    const setEventListener = (mediaConnection: MediaConnection) => {
-        mediaConnection.on('stream', (stream) => {
-            const $video = theirVideoRef.current
-            if (!$video) return
-            $video.srcObject = stream
-            $video.onloadedmetadata = () => {
-                $video.play()
-            }
-        })
-    }
-
-    const call = () => {
-        if (!currentStream || !currentPeer) return
-        const mediaConnection = currentPeer.call(textarea, currentStream)
-        setEventListener(mediaConnection)
-    }
-
-    const theirVideoRef = useRef<HTMLVideoElement | null>(null)
     const [textarea, setTextarea] = useState<string>('')
 
     const handleChangeTextarea = (
@@ -83,7 +51,7 @@ const Home = (): JSX.Element => {
             <button onClick={init}>初期化</button>
             <p>{currentPeer?.id}</p>
             <textarea onChange={handleChangeTextarea} />
-            <button onClick={call}>発信</button>
+            <button onClick={() => call(textarea)}>発信</button>
             <video ref={theirVideoRef} autoPlay playsInline width={400}>
                 <track default kind="captions" />
             </video>
