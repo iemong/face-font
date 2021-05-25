@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Peer, { MediaConnection } from 'skyway-js'
-import * as Tone from 'tone'
 import { useVideo } from '~/assets/hooks/useVideo'
 import { useCanvas } from '~/assets/hooks/useCanvas'
+import { useTone } from '~/assets/hooks/useTone'
 
 interface CanvasElement extends HTMLCanvasElement {
     captureStream(frameRate?: number): MediaStream
@@ -13,32 +13,16 @@ const Home = (): JSX.Element => {
     const [currentPeer, setPeer] = useState<Peer | null>(null)
 
     const [videoRef, initVideo] = useVideo()
-
     const [canvasRef, context, initCanvas, loopCanvas] = useCanvas(videoRef)
+    const [initTone, createAudioNode] = useTone()
 
     useEffect(() => {
         if (!context) return
         loopCanvas()
     }, [context])
 
-    const initToneUserMedia = async () => {
-        const micAudio = new Tone.UserMedia()
-        await micAudio.open()
-        return micAudio
-    }
-
-    const createAudioNode = (micAudio: Tone.UserMedia) => {
-        const shifter = new Tone.PitchShift(5)
-        const reverb = new Tone.Freeverb()
-        const effectedDest = Tone.context.createMediaStreamDestination()
-        micAudio.connect(shifter)
-        shifter.connect(reverb)
-        reverb.connect(effectedDest)
-        return effectedDest
-    }
-
     const init = async () => {
-        const micAudio = await initToneUserMedia()
+        const micAudio = await initTone()
         await initVideo()
         initCanvas()
         if (!canvasRef.current) return
