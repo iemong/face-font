@@ -107,6 +107,17 @@ const RoomPage = (): JSX.Element => {
         })
     }
 
+    // const joinTest = async () => {
+    //     setStatus('joined')
+    //     const newVideo = document.createElement('video')
+    //     newVideo.srcObject = currentStream
+    //     newVideo.playsInline = true
+    //     // mark peerId to find it later at peerLeave event
+    //     //newVideo.setAttribute('data-peer-id', stream.peerId)
+    //     remoteVideos.current?.append(newVideo)
+    //     await newVideo.play().catch(console.error)
+    // }
+
     const leaveRoom = () => {
         if (!room) return
         room.close()
@@ -129,9 +140,22 @@ const RoomPage = (): JSX.Element => {
                     autoPlay
                     muted
                     playsInline
+                    data-status={status}
                 />
                 <canvas ref={canvasRef} className={'hidden'} />
-                <div ref={remoteVideos} />
+                <div css={videoWrapperStyle}>
+                    <div ref={remoteVideos} css={remoteVideoStyle} />
+                </div>
+                {/*<button*/}
+                {/*    css={{*/}
+                {/*        position: 'absolute',*/}
+                {/*        top: 0,*/}
+                {/*        right: 0,*/}
+                {/*    }}*/}
+                {/*    onClick={joinTest}*/}
+                {/*>*/}
+                {/*    テスト*/}
+                {/*</button>*/}
                 <footer css={footerStyle}>
                     {(status === 'ready' && (
                         <button css={buttonStyle} onClick={joinRoom}>
@@ -171,7 +195,8 @@ const readyStyle = css`
     height: 100vh;
     background-color: ${gray};
     &[data-is-prepare='true'] {
-        display: block;
+        display: grid;
+        grid-template-rows: 1fr 80px;
     }
 `
 
@@ -188,11 +213,22 @@ const previewVideoStyle = css`
     padding: 32px;
     margin: 0 auto;
     box-sizing: border-box;
+    &[data-status='joined'] {
+        display: none;
+    }
+`
+
+const videoWrapperStyle = css`
+    overflow: auto;
+`
+
+const remoteVideoStyle = css`
+    display: grid;
+    grid: auto-flow auto / auto auto auto;
+    width: 100%;
 `
 
 const footerStyle = css`
-    position: absolute;
-    bottom: 0;
     display: flex;
     justify-content: center;
     align-items: center;
