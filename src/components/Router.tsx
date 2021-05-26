@@ -7,10 +7,10 @@ const Router = (): JSX.Element => {
     return (
         <BrowserRouter>
             <Switch>
-                <Route path="/room">
+                <Route path="/">
                     <Room />
                 </Route>
-                <Route path="/">
+                <Route path="/home">
                     <Home />
                 </Route>
             </Switch>
