@@ -67,21 +67,31 @@ const Room = (): JSX.Element => {
         })
 
         sfuRoom.on('peerLeave', (peerId) => {
-            const target = remoteVideos.current?.querySelector(
+            const target:
+                | HTMLVideoElement
+                | null
+                | undefined = remoteVideos.current?.querySelector(
                 `[data-peer-id="${peerId}"]`
             )
             if (!target) return
-            target.srcObject.getTracks().forEach((track) => track.stop())
+            ;(target.srcObject as MediaStream)
+                .getTracks()
+                .forEach((track) => track.stop())
             target.srcObject = null
             target.remove()
         })
 
         sfuRoom.once('close', () => {
             console.log('you left')
-            Array.from(remoteVideos.current?.children).forEach((video) => {
-                video.srcObject.getTracks().forEach((track) => track.stop())
-                video.srcObject = null
-                video.remove()
+            const elements = remoteVideos.current?.children
+            if (!elements) return
+            Array.from(elements).forEach((video) => {
+                const v = video as HTMLVideoElement
+                ;(v.srcObject as MediaStream)
+                    .getTracks()
+                    .forEach((track) => track.stop())
+                v.srcObject = null
+                v.remove()
             })
         })
     }
