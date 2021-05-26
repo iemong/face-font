@@ -13,7 +13,7 @@ export const useVideo = (): [
         }
         const stream = await navigator.mediaDevices.getUserMedia(constraints)
         const $video = videoRef.current
-        if (!$video) return { width: O, height: 0 }
+        if (!$video) return { width: 0, height: 0 }
         $video.srcObject = stream
         $video.onloadedmetadata = () => {
             $video.play()
@@ -22,7 +22,7 @@ export const useVideo = (): [
         const currentTrack = stream.getVideoTracks().find((track) => {
             return track.readyState === 'live'
         })
-        if (!currentTrack) return { width: O, height: 0 }
+        if (!currentTrack) return { width: 0, height: 0 }
         const { width, height } = currentTrack.getSettings()
         return { width: width || 0, height: height || 0 }
     }
