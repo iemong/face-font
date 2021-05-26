@@ -1,19 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react'
+/** @jsx jsx */
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { useVideo } from '~/assets/hooks/useVideo'
 import { useCanvas } from '~/assets/hooks/useCanvas'
 import { useTone } from '~/assets/hooks/useTone'
 import { useSkyWay } from '~/assets/hooks/useSkyWay'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { jsx, css } from '@emotion/react'
+import { SfuRoom } from 'skyway-js'
 
 interface CanvasElement extends HTMLCanvasElement {
     captureStream(frameRate?: number): MediaStream
 }
 
-const Room = (): JSX.Element => {
+const RoomPage = (): JSX.Element => {
     const [currentStream, setStream] = useState<MediaStream | null>(null)
     const [videoRef, initVideo] = useVideo()
     const [canvasRef, context, initCanvas, loopCanvas] = useCanvas(videoRef)
     const [initTone, createAudioNode] = useTone()
-    const [theirVideoRef, currentPeer, initPeer] = useSkyWay(currentStream)
+    const [_, currentPeer, initPeer] = useSkyWay(currentStream)
+    const [isPrepare, setIsPrepare] = useState(false)
+    const [room, setRoom] = useState<SfuRoom | null>(null)
+    const [status, setStatus] = useState<'ready' | 'joined'>('ready')
 
     const remoteVideos = useRef<HTMLDivElement | null>(null)
 
@@ -34,15 +41,19 @@ const Room = (): JSX.Element => {
         canvasStream.addTrack(audioNode.stream.getAudioTracks()[0])
         initPeer(canvasStream)
         setStream(canvasStream)
+        setIsPrepare(true)
     }
 
     const joinRoom = () => {
         if (!(currentPeer && currentStream)) return
         if (!currentPeer.open) return
-        const sfuRoom = currentPeer.joinRoom('real24', {
+        const sfuRoom: SfuRoom = currentPeer.joinRoom('real24', {
             mode: 'sfu',
             stream: currentStream,
         })
+
+        setRoom(sfuRoom)
+        setStatus('joined')
 
         sfuRoom.once('open', () => {
             console.log('=== you joined')
@@ -96,19 +107,96 @@ const Room = (): JSX.Element => {
         })
     }
 
+    const leaveRoom = () => {
+        if (!room) return
+        room.close()
+        setStatus('ready')
+    }
+
     return (
-        <>
-            <video ref={videoRef} autoPlay muted playsInline />
-            <canvas ref={canvasRef} className={'hidden'} />
-            <button onClick={init}>初期化</button>
-            <button onClick={joinRoom}>参加</button>
-            <p>{currentPeer?.id}</p>
-            <video ref={theirVideoRef} autoPlay playsInline width={400}>
-                <track default kind="captions" />
-            </video>
-            <div ref={remoteVideos} />
-        </>
+        <Fragment>
+            {!isPrepare && (
+                <div css={prepareStyle}>
+                    <button css={buttonStyle} onClick={init}>
+                        接続準備
+                    </button>
+                </div>
+            )}
+            <div data-is-prepare={isPrepare} css={readyStyle}>
+                <video
+                    css={previewVideoStyle}
+                    ref={videoRef}
+                    autoPlay
+                    muted
+                    playsInline
+                />
+                <canvas ref={canvasRef} className={'hidden'} />
+                <div ref={remoteVideos} />
+                <footer css={footerStyle}>
+                    {(status === 'ready' && (
+                        <button css={buttonStyle} onClick={joinRoom}>
+                            部屋に入る
+                        </button>
+                    )) ||
+                        (status === 'joined' && (
+                            <button css={buttonStyle} onClick={leaveRoom}>
+                                退出する
+                            </button>
+                        ))}
+                </footer>
+            </div>
+        </Fragment>
     )
 }
 
-export default Room
+export default RoomPage
+
+const green = '#2EC4B6'
+const white = '#fff'
+const gray = '#565656'
+
+const prepareStyle = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-color: ${gray};
+`
+
+const readyStyle = css`
+    position: relative;
+    display: none;
+    width: 100%;
+    height: 100vh;
+    background-color: ${gray};
+    &[data-is-prepare='true'] {
+        display: block;
+    }
+`
+
+const buttonStyle = css`
+    width: 180px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: ${green};
+    font-weight: bold;
+    color: ${white};
+`
+
+const previewVideoStyle = css`
+    padding: 32px;
+    margin: 0 auto;
+    box-sizing: border-box;
+`
+
+const footerStyle = css`
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 80px;
+    background-color: white;
+`
