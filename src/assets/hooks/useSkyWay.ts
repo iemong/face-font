@@ -14,7 +14,7 @@ export const useSkyWay = (
 
     const initPeer = (stream: MediaStream) => {
         const peer = new Peer({
-            key: process.env.API_KEY || '',
+            key: import.meta.env.VITE_API_KEY || '',
             debug: 3,
         })
         peer.on('open', () => {
