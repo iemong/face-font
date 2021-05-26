@@ -1,9 +1,9 @@
-import { HEIGHT, WIDTH } from '~/assets/utils/const'
-
 export const createGrayScaleMosaic = (
     context: CanvasRenderingContext2D,
     imageData: ImageData,
-    mosaicSize = 4
+    mosaicSize = 4,
+    WIDTH = 0,
+    HEIGHT = 0
 ) => {
     for (let y = 0; y < HEIGHT; y += mosaicSize) {
         for (let x = 0; x < WIDTH; x += mosaicSize) {
@@ -22,7 +22,9 @@ export const createGrayScaleMosaic = (
 export const createMosaic = (
     context: CanvasRenderingContext2D,
     imageData: ImageData,
-    mosaicSize = 4
+    mosaicSize = 4,
+    WIDTH = 0,
+    HEIGHT = 0
 ) => {
     for (let y = 0; y < HEIGHT; y += mosaicSize) {
         for (let x = 0; x < WIDTH; x += mosaicSize) {

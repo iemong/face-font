@@ -27,12 +27,12 @@ const RoomPage = (): JSX.Element => {
     useEffect(() => {
         if (!context) return
         loopCanvas()
-    }, [context])
+    }, [context, loopCanvas])
 
     const init = async () => {
         const micAudio = await initTone()
-        await initVideo()
-        initCanvas()
+        const size = await initVideo()
+        initCanvas(size)
         if (!canvasRef.current) return
         const audioNode = await createAudioNode(micAudio)
         const canvasStream = (canvasRef.current as CanvasElement).captureStream(
