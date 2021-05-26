@@ -184,23 +184,28 @@ const white = '#fff'
 const gray = '#565656'
 
 const prepareStyle = css`
+    position: absolute;
+    top: 0;
+    left: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     background-color: ${gray};
 `
 
 const readyStyle = css`
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
     display: none;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     background-color: ${gray};
     &[data-is-prepare='true'] {
         display: grid;
-        grid-template-rows: 1fr 80px;
+        grid-template-rows: 1fr 72px;
     }
 `
 
@@ -251,6 +256,6 @@ const footerStyle = css`
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 80px;
+    height: 72px;
     background-color: white;
 `
