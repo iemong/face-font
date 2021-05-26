@@ -107,16 +107,16 @@ const RoomPage = (): JSX.Element => {
         })
     }
 
-    // const joinTest = async () => {
-    //     setStatus('joined')
-    //     const newVideo = document.createElement('video')
-    //     newVideo.srcObject = currentStream
-    //     newVideo.playsInline = true
-    //     // mark peerId to find it later at peerLeave event
-    //     //newVideo.setAttribute('data-peer-id', stream.peerId)
-    //     remoteVideos.current?.append(newVideo)
-    //     await newVideo.play().catch(console.error)
-    // }
+    const joinTest = async () => {
+        setStatus('joined')
+        const newVideo = document.createElement('video')
+        newVideo.srcObject = currentStream
+        newVideo.playsInline = true
+        // mark peerId to find it later at peerLeave event
+        //newVideo.setAttribute('data-peer-id', stream.peerId)
+        remoteVideos.current?.append(newVideo)
+        await newVideo.play().catch(console.error)
+    }
 
     const leaveRoom = () => {
         if (!room) return
@@ -135,27 +135,31 @@ const RoomPage = (): JSX.Element => {
             )}
             <div data-is-prepare={isPrepare} css={readyStyle}>
                 <video
-                    css={previewVideoStyle}
                     ref={videoRef}
                     autoPlay
                     muted
                     playsInline
+                    css={previewVideoStyle}
                     data-status={status}
                 />
-                <canvas ref={canvasRef} className={'hidden'} />
                 <div css={videoWrapperStyle}>
+                    <canvas
+                        ref={canvasRef}
+                        css={previewCanvasStyle}
+                        data-status={status}
+                    />
                     <div ref={remoteVideos} css={remoteVideoStyle} />
                 </div>
-                {/*<button*/}
-                {/*    css={{*/}
-                {/*        position: 'absolute',*/}
-                {/*        top: 0,*/}
-                {/*        right: 0,*/}
-                {/*    }}*/}
-                {/*    onClick={joinTest}*/}
-                {/*>*/}
-                {/*    テスト*/}
-                {/*</button>*/}
+                <button
+                    css={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                    }}
+                    onClick={joinTest}
+                >
+                    テスト
+                </button>
                 <footer css={footerStyle}>
                     {(status === 'ready' && (
                         <button css={buttonStyle} onClick={joinRoom}>
@@ -218,7 +222,20 @@ const previewVideoStyle = css`
     }
 `
 
+const previewCanvasStyle = css`
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    width: 25vw;
+    box-sizing: border-box;
+    border: 2px solid ${green};
+    &[data-status='ready'] {
+        display: none;
+    }
+`
+
 const videoWrapperStyle = css`
+    position: relative;
     overflow: auto;
 `
 
