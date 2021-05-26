@@ -225,6 +225,7 @@ const videoWrapperStyle = css`
 const remoteVideoStyle = css`
     display: grid;
     grid: auto-flow auto / auto auto auto;
+    justify-content: center;
     width: 100%;
 `
 
